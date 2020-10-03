@@ -17,7 +17,12 @@ public class CharacterControl : MonoBehaviour
     readonly Vector3 Y_MASK = new Vector3(1f, 0f, 1f);
 
     InputAction moveAction;
-    
+
+    enum AnimationState
+    {
+        Idle = 1,
+        Running = 2,
+    }
 
     void Start()
     {
@@ -41,11 +46,11 @@ public class CharacterControl : MonoBehaviour
 
         if (controller.velocity.sqrMagnitude == 0)
         {
-            animator.SetInteger("State", 0);
+            animator.SetInteger("State", (int)AnimationState.Idle);
         }
         else if (controller.velocity.sqrMagnitude > 0f)
         {
-            animator.SetInteger("State", 1);
+            animator.SetInteger("State", (int)AnimationState.Running);
         }
         
     }
