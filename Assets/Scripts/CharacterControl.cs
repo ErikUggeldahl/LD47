@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 [RequireComponent(typeof(PlayerInput))]
 public class CharacterControl : MonoBehaviour
@@ -10,23 +11,27 @@ public class CharacterControl : MonoBehaviour
     [SerializeField] PlayerInput input = null;
     [SerializeField] Animator animator = null;
     [SerializeField] Transform model = null;
+    [SerializeField] Dagger daggerLeft = null;
+    [SerializeField] Dagger daggerRight = null;
 
     const float SPEED = 5f;
     readonly Vector3 GRAVITY = Physics.gravity;
     readonly Quaternion ISOMETRIC_ROTATION = Quaternion.AngleAxis(45f, Vector3.up);
-    readonly Vector3 Y_MASK = new Vector3(1f, 0f, 1f);
 
     InputAction moveAction;
 
     enum AnimationState
     {
-        Idle = 1,
-        Running = 2,
+        Idle = 0,
+        Running = 1,
     }
 
     void Start()
     {
-        moveAction = input.actions["move"];
+        moveAction = input.actions["Move"];
+
+        input.actions["FireLeft"].performed += (InputAction.CallbackContext ctx) => daggerLeft.Action();
+        input.actions["FireRight"].performed += (InputAction.CallbackContext ctx) => daggerRight.Action();
     }
 
     void Update()
@@ -44,14 +49,13 @@ public class CharacterControl : MonoBehaviour
             model.rotation = Quaternion.Slerp(model.rotation, Quaternion.LookRotation(moveVelocity), 5f * Time.deltaTime);
         }
 
-        if (controller.velocity.sqrMagnitude == 0)
+        if (controller.velocity.sqrMagnitude <= 0.3f)
         {
             animator.SetInteger("State", (int)AnimationState.Idle);
         }
-        else if (controller.velocity.sqrMagnitude > 0f)
+        else if (controller.velocity.sqrMagnitude > 0.3f)
         {
             animator.SetInteger("State", (int)AnimationState.Running);
         }
-        
     }
 }
