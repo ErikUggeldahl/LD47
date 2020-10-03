@@ -6,12 +6,15 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerInput))]
 public class CharacterControl : MonoBehaviour
 {
-    [SerializeField] CharacterController controller;
-    [SerializeField] PlayerInput input;
+    [SerializeField] CharacterController controller = null;
+    [SerializeField] PlayerInput input = null;
+    [SerializeField] Animator animator = null;
+    [SerializeField] Transform model = null;
 
     const float SPEED = 5f;
     readonly Vector3 GRAVITY = Physics.gravity;
     readonly Quaternion ISOMETRIC_ROTATION = Quaternion.AngleAxis(45f, Vector3.up);
+    readonly Vector3 Y_MASK = new Vector3(1f, 0f, 1f);
 
     InputAction moveAction;
     
@@ -30,5 +33,20 @@ public class CharacterControl : MonoBehaviour
         velocity += moveVelocity;
 
         controller.Move(velocity * Time.deltaTime);
+
+        if (moveVelocity.sqrMagnitude > 0)
+        {
+            model.rotation = Quaternion.Slerp(model.rotation, Quaternion.LookRotation(moveVelocity), 5f * Time.deltaTime);
+        }
+
+        if (controller.velocity.sqrMagnitude == 0)
+        {
+            animator.SetInteger("State", 0);
+        }
+        else if (controller.velocity.sqrMagnitude > 0f)
+        {
+            animator.SetInteger("State", 1);
+        }
+        
     }
 }
