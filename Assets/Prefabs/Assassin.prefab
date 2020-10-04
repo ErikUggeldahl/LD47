@@ -156,6 +156,9 @@ MonoBehaviour:
   model: {fileID: 6239158145107015812}
   daggerLeft: {fileID: 9021353214862729792}
   daggerRight: {fileID: 7680891500234789125}
+  leftHand: {fileID: 8773407873084842065}
+  rightHand: {fileID: 4812916131294660362}
+  animationEvents: {fileID: 801863509685410059}
 --- !u!183 &5845470262521899613
 Cloth:
   m_ObjectHideFlags: 0
@@ -412,6 +415,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.000000059604645, y: 0.5682781, z: 1.1435258}
     m_Extent: {x: 0.15995273, y: 0.577652, z: 0.034909487}
   m_DirtyAABB: 0
+--- !u!114 &801863509685410059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6763880980641407550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca032f776b30f84985fedf203b49b0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &730103065488947495
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -427,6 +442,10 @@ PrefabInstance:
       propertyPath: camera
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6969842422912886818, guid: 7100ee040f7dae3448ea10404e3beb24, type: 3}
+      propertyPath: hand
+      value: 
+      objectReference: {fileID: 4812916131294660362}
     - target: {fileID: 7822305255107942714, guid: 7100ee040f7dae3448ea10404e3beb24, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.03
@@ -499,6 +518,10 @@ PrefabInstance:
       propertyPath: camera
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6969842422912886818, guid: 7100ee040f7dae3448ea10404e3beb24, type: 3}
+      propertyPath: hand
+      value: 
+      objectReference: {fileID: 8773407873084842065}
     - target: {fileID: 7822305255107942714, guid: 7100ee040f7dae3448ea10404e3beb24, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.03
@@ -625,6 +648,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 902b01b8243811744b6fde829958921b, type: 3}
+--- !u!1 &6763880980641407550 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 902b01b8243811744b6fde829958921b, type: 3}
+  m_PrefabInstance: {fileID: 5845470262646792047}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6239158145107015812 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 902b01b8243811744b6fde829958921b, type: 3}
@@ -638,6 +666,16 @@ Animator:
 --- !u!4 &5167865645177404504 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1632759751195861815, guid: 902b01b8243811744b6fde829958921b, type: 3}
+  m_PrefabInstance: {fileID: 5845470262646792047}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8773407873084842065 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -6278528321999487170, guid: 902b01b8243811744b6fde829958921b, type: 3}
+  m_PrefabInstance: {fileID: 5845470262646792047}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4812916131294660362 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -7794145995985840027, guid: 902b01b8243811744b6fde829958921b, type: 3}
   m_PrefabInstance: {fileID: 5845470262646792047}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &3497826144579749511 stripped
@@ -715,7 +753,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 80816456b0ea7584ca03566770156e36, type: 3}
       propertyPath: m_Name
-      value: AssassinCape (2)
+      value: AssassinCape
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -7511558181221131132, guid: 80816456b0ea7584ca03566770156e36, type: 3}

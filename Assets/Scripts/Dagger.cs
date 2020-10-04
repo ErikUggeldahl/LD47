@@ -8,7 +8,6 @@ using UnityEngine.InputSystem.XR.Haptics;
 
 public class Dagger : MonoBehaviour
 {
-    [SerializeField] new Camera camera = null;
     [SerializeField] new Rigidbody rigidbody = null;
     [SerializeField] LineRenderer rope = null;
     [SerializeField] Transform attachPoint = null;
@@ -24,6 +23,9 @@ public class Dagger : MonoBehaviour
     Transform originalParent;
     Quaternion originalRotation;
 
+    new Camera camera = null;
+
+    int mask;
     Vector3 target;
 
     public Rigidbody TargetRigidbody { get; private set; }
@@ -34,6 +36,8 @@ public class Dagger : MonoBehaviour
     public enum DaggerState
     {
         Holstered,
+        WillGrab,
+        Grabbed,
         Firing,
         Embedded,
         Retracting,
@@ -46,6 +50,8 @@ public class Dagger : MonoBehaviour
 
         originalParent = transform.parent;
         originalRotation = transform.localRotation;
+
+        mask = LayerMask.GetMask("Default", "World");
     }
 
     void Update()
@@ -67,7 +73,7 @@ public class Dagger : MonoBehaviour
 
     public void Action()
     {
-        if (State == DaggerState.Holstered)
+        if (State == DaggerState.Holstered || State == DaggerState.Grabbed)
         {
             StartCoroutine(Fire());
         }
@@ -75,6 +81,24 @@ public class Dagger : MonoBehaviour
         {
             StartCoroutine(Retract());
         }
+    }
+
+    public void WillGrab()
+    {
+        if (State != DaggerState.Holstered) return;
+            
+        State = DaggerState.WillGrab;
+    }
+
+    public void Grab(Transform hand)
+    {
+        if (State != DaggerState.WillGrab) return;
+
+        State = DaggerState.Grabbed;
+
+        transform.parent = hand;
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
     }
 
     public void ActionBoth(Dagger other)
@@ -92,7 +116,11 @@ public class Dagger : MonoBehaviour
     {
         var ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
         RaycastHit hit;
-        if (!Physics.Raycast(ray, out hit)) yield break;
+        if (!Physics.Raycast(ray, out hit, Mathf.Infinity, mask) || Vector3.Distance(hit.point, transform.position) <= PICKUP_RADIUS)
+        {
+            State = DaggerState.Holstered;
+            yield break;
+        }
 
         State = DaggerState.Firing;
 
@@ -180,7 +208,6 @@ public class Dagger : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
         interceptTrigger.enabled = false;
     }
 }

@@ -1539,7 +1539,7 @@ GameObject:
   - component: {fileID: 1440861525}
   - component: {fileID: 1440861524}
   - component: {fileID: 1440861529}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Ceiling
   m_TagString: Occluder
   m_Icon: {fileID: 0}
@@ -2019,6 +2019,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7680891500234789125, guid: 970b0655a1208a2438e452e5ce195a04, type: 3}
+      propertyPath: camera
+      value: 
+      objectReference: {fileID: 82968770}
     - target: {fileID: 9021353214862729792, guid: 970b0655a1208a2438e452e5ce195a04, type: 3}
       propertyPath: camera
       value: 
