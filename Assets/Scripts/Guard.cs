@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,12 +8,22 @@ public class Guard : MonoBehaviour
     [SerializeField] GuardCap cap = null;
     [SerializeField] NavMeshAgent agent = null;
     [SerializeField] Transform patrolPath = null;
+    [SerializeField] int currentPatrolPoint = 0;
     [SerializeField] GameObject bulletPrefab = null;
     [SerializeField] Transform bulletSpawnPoint = null;
+    [SerializeField] new AudioSource audio = null;
+    [SerializeField] Sounds sounds = null;
+
+    [Serializable]
+    class Sounds
+    {
+        public AudioClip alarm = null;
+        public AudioClip shoot = null;
+        public AudioClip die = null;
+    }
 
     const float PATROL_ARRIVED_DISTANCE = 0.5f;
     Transform[] patrolPoints;
-    int currentPatrolPoint = 0;
 
     const float SIGHT_DISTANCE = 20f;
     int sightMask;
@@ -36,8 +45,11 @@ public class Guard : MonoBehaviour
     {
         agent.autoBraking = false;
 
-        patrolPoints = patrolPath.GetComponentsInChildren<Transform>().Where(t => t != patrolPath).ToArray();
-        PatrolToCurrentPoint();
+        if (patrolPath)
+        {
+            patrolPoints = patrolPath.GetComponentsInChildren<Transform>().Where(t => t != patrolPath).ToArray();
+            PatrolToCurrentPoint();
+        }
 
         sightMask = LayerMask.GetMask("World", "Player");
     }
@@ -56,7 +68,7 @@ public class Guard : MonoBehaviour
 
     void Patrol()
     {
-        if (patrolPoints.Length > 0 && !agent.pathPending && agent.remainingDistance < PATROL_ARRIVED_DISTANCE)
+        if (patrolPoints != null && patrolPoints.Length > 0 && !agent.pathPending && agent.remainingDistance < PATROL_ARRIVED_DISTANCE)
         {
             currentPatrolPoint = (currentPatrolPoint + 1) % patrolPoints.Length;
             PatrolToCurrentPoint();
@@ -72,6 +84,8 @@ public class Guard : MonoBehaviour
                 cap.SetState(GuardCap.State.Alarm);
 
                 target = hit.transform;
+
+                audio.PlayOneShot(sounds.alarm);
             }
         }
     }
@@ -88,6 +102,8 @@ public class Guard : MonoBehaviour
             attackCooldown = ATTACK_COOLDOWN_MAX;
             GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
             bullet.GetComponent<Bullet>().Target = target.position + new Vector3(0f, 1.2f, 0f);
+
+            audio.PlayOneShot(sounds.shoot);
         }
     }
 
@@ -100,11 +116,15 @@ public class Guard : MonoBehaviour
 
     public void Die()
     {
+        if (state == State.Dead) return;
+
         state = State.Dead;
 
         cap.SetState(GuardCap.State.Dead);
 
         agent.enabled = false;
+
+        audio.PlayOneShot(sounds.die);
     }
 
     public void Explode()

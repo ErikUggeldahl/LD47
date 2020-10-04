@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(PlayerInput))]
@@ -18,6 +16,19 @@ public class CharacterControl : MonoBehaviour
     [SerializeField] Transform leftHand = null;
     [SerializeField] Transform rightHand = null;
     [SerializeField] CharacterAnimationEventReceiver animationEvents = null;
+    [SerializeField] new AudioSource audio = null;
+    [SerializeField] Sounds sounds = null;
+
+    [Serializable]
+    class Sounds
+    {
+        public AudioClip enterLevel = null;
+        public AudioClip footstep = null;
+        public AudioClip popUp = null;
+        public AudioClip fireBoth = null;
+        public AudioClip fallDeath = null;
+        public AudioClip bulletDeath = null;
+    }
 
     const float SPEED = 5f;
     const float ROTATION_SLERP_SPEED = 5f;
@@ -41,6 +52,13 @@ public class CharacterControl : MonoBehaviour
         ThrowLeft = 4,
     }
 
+    const float DEATH_TIMER = 0.75f;
+    public enum DeathSource
+    {
+        Fall,
+        Bullet,
+    }
+
     void Start()
     {
         moveAction = input.actions["Move"];
@@ -49,9 +67,15 @@ public class CharacterControl : MonoBehaviour
         input.actions["FireRight"].performed += (InputAction.CallbackContext ctx) => FireOne(daggerRight, AnimationState.ThrowRight);
         input.actions["FireBoth"].performed += FireBoth;
 
+        input.actions["RestartLevel"].performed += (InputAction.CallbackContext ctx) => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        input.actions["QuitToLevelSelect"].performed += (InputAction.CallbackContext ctx) => SceneManager.LoadScene(1);
+
         animationEvents.GrabDaggers += GrabDaggers;
         animationEvents.ReleaseDaggers += ReleaseDaggers;
         animationEvents.ThrowComplete += ThrowComplete;
+        animationEvents.Footstep += Footstep;
+
+        audio.PlayOneShot(sounds.enterLevel);
     }
 
     void Update()
@@ -98,6 +122,8 @@ public class CharacterControl : MonoBehaviour
         {
             animator.SetTrigger("Popped");
 
+            audio.PlayOneShot(sounds.popUp);
+
             var toLeft = daggerLeft.transform.position - transform.position;
             var toRight = daggerRight.transform.position - transform.position;
             popVelocity = ((toLeft + toRight).normalized + Vector3.up).normalized * POP_FORCE;
@@ -109,6 +135,8 @@ public class CharacterControl : MonoBehaviour
         else if (daggerLeft.State == Dagger.DaggerState.Holstered && daggerRight.State == Dagger.DaggerState.Holstered)
         {
             animator.SetInteger("State", (int)AnimationState.DoubleThrow);
+
+            audio.PlayOneShot(sounds.fireBoth);
 
             daggerLeft.WillGrab();
             daggerRight.WillGrab();
@@ -163,8 +191,31 @@ public class CharacterControl : MonoBehaviour
         popVelocity = Vector3.zero;
     }
 
-    public void Die()
+    void Footstep()
     {
+        if (controller.isGrounded)
+        {
+            audio.PlayOneShot(sounds.footstep);
+        }
+    }
+
+    public void Die(DeathSource source)
+    {
+        AudioClip deathSound = null;
+        switch (source)
+        {
+            case DeathSource.Fall: deathSound = sounds.fallDeath; break;
+            case DeathSource.Bullet: deathSound = sounds.bulletDeath; break;
+        }
+        audio.PlayOneShot(deathSound);
+
+        StartCoroutine(WaitForDeath());
+    }
+
+    IEnumerator WaitForDeath()
+    {
+        yield return new WaitForSeconds(DEATH_TIMER);
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

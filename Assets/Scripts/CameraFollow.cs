@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [ExecuteInEditMode]
 public class CameraFollow : MonoBehaviour
 {
     [SerializeField] Transform target = null;
 
-    readonly Vector3 OFFSET = new Vector3(-3f, 5f, -3f);
+    readonly Vector3 OFFSET = new Vector3(-6f, 7f, -6f);
     const float FOLLOW_FACTOR = 5f;
 
     void Update()

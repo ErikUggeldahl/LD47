@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
-using UnityEditor.ShaderGraph.Internal;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XR.Haptics;
 
 public class Dagger : MonoBehaviour
 {
@@ -13,6 +10,15 @@ public class Dagger : MonoBehaviour
     [SerializeField] Transform attachPoint = null;
     [SerializeField] Transform rotationParent = null;
     [SerializeField] Collider interceptTrigger = null;
+    [SerializeField] new AudioSource audio = null;
+    [SerializeField] Sounds sounds = null;
+
+    [Serializable]
+    class Sounds
+    {
+        public AudioClip fire = null;
+        public AudioClip retract = null;
+    }
 
     const float TRAVEL_SPEED = 30f;
     const float RETRACT_SPEED = 10f;
@@ -25,6 +31,7 @@ public class Dagger : MonoBehaviour
 
     new Camera camera = null;
 
+    const float RANGE = 20f;
     int mask;
     Vector3 target;
 
@@ -121,7 +128,7 @@ public class Dagger : MonoBehaviour
     {
         var ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
         RaycastHit hit;
-        if (!Physics.Raycast(ray, out hit, Mathf.Infinity, mask) || Vector3.Distance(hit.point, transform.position) <= PICKUP_RADIUS)
+        if (!Physics.Raycast(ray, out hit, RANGE, mask) || Vector3.Distance(hit.point, transform.position) <= PICKUP_RADIUS)
         {
             State = DaggerState.Holstered;
             yield break;
@@ -135,6 +142,8 @@ public class Dagger : MonoBehaviour
         rope.enabled = true;
 
         interceptTrigger.enabled = true;
+
+        audio.PlayOneShot(sounds.fire);
 
         while (interceptTrigger.enabled && !MoveToTarget(target, TRAVEL_SPEED))
         {
@@ -170,6 +179,8 @@ public class Dagger : MonoBehaviour
         rigidbody.isKinematic = false;
         var retractionForce = (Vector3.up + transform.forward * -1f).normalized * RETRACT_POP_FORCE;
         rigidbody.AddForce(retractionForce, ForceMode.Impulse);
+
+        audio.PlayOneShot(sounds.retract);
 
         yield return new WaitForSeconds(0.5f);
 
@@ -222,6 +233,8 @@ public class Dagger : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (other.isTrigger) return;
+
         interceptTrigger.enabled = false;
 
         TargetRigidbody = other.attachedRigidbody;

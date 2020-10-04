@@ -36,6 +36,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "RestartLevel",
+                    "type": "Button",
+                    "id": "7a61071e-6623-4145-9133-6abe5d12c628",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "QuitToLevelSelect",
+                    "type": "Button",
+                    "id": "ea7d70bd-c33d-46e1-b7d0-f0c8f6408d6c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -201,6 +217,28 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "FireBoth",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b9de2985-8928-486f-87d4-76d05138760b",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "RestartLevel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "12d78e32-aedb-4b56-ba8d-c506b699606c",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "QuitToLevelSelect",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

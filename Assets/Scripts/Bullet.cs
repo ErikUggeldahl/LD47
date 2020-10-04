@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
@@ -35,7 +33,7 @@ public class Bullet : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            other.GetComponent<CharacterControl>().Die();
+            other.GetComponent<CharacterControl>().Die(CharacterControl.DeathSource.Bullet);
         }
 
         Destroy(gameObject);

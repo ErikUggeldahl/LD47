@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterAnimationEventReceiver : MonoBehaviour
@@ -15,6 +13,7 @@ public class CharacterAnimationEventReceiver : MonoBehaviour
     public event Action<WhichDagger> GrabDaggers;
     public event Action<WhichDagger> ReleaseDaggers;
     public event Action ThrowComplete;
+    public event Action Footstep;
 
     public void GrabDaggerAnimEvent(int which)
     {
@@ -29,5 +28,10 @@ public class CharacterAnimationEventReceiver : MonoBehaviour
     public void ThrowCompleteAnimEvent()
     {
         ThrowComplete();
+    }
+
+    public void FootstepAnimEvent()
+    {
+        Footstep();
     }
 }

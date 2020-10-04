@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5845470263333278223}
   - component: {fileID: 5845470263333278221}
   - component: {fileID: 5845470263333278220}
+  - component: {fileID: -3943072931902754262}
   m_Layer: 8
   m_Name: Assassin
   m_TagString: Player
@@ -159,6 +160,110 @@ MonoBehaviour:
   leftHand: {fileID: 8773407873084842065}
   rightHand: {fileID: 4812916131294660362}
   animationEvents: {fileID: 801863509685410059}
+  audio: {fileID: -3943072931902754262}
+  sounds:
+    enterLevel: {fileID: 8300000, guid: 58bc590b35f3bcc44a37d7dd6625db68, type: 3}
+    footstep: {fileID: 8300000, guid: caaa817248ceca64f8a5c32b26e7e573, type: 3}
+    popUp: {fileID: 8300000, guid: fd64455379491f1469eaf21798a8be13, type: 3}
+    fireBoth: {fileID: 8300000, guid: 9a34cce4b26b2684ba82a73364bb93e9, type: 3}
+    fallDeath: {fileID: 8300000, guid: fc8c474be49b61d4993650a17db9f38d, type: 3}
+    bulletDeath: {fileID: 8300000, guid: 069a2d05111e27048ac9334c04accd57, type: 3}
+--- !u!82 &-3943072931902754262
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5845470263333278217}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!183 &5845470262521899613
 Cloth:
   m_ObjectHideFlags: 0
@@ -412,8 +517,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 0.000000059604645, y: 0.5682781, z: 1.1435258}
-    m_Extent: {x: 0.15995273, y: 0.577652, z: 0.034909487}
+    m_Center: {x: -0.0010432452, y: 0.1152663, z: 0.6334538}
+    m_Extent: {x: 0.16141982, y: 0.12464019, z: 0.54498154}
   m_DirtyAABB: 0
 --- !u!114 &801863509685410059
 MonoBehaviour:
