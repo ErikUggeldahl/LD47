@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR.Haptics;
 
 public class Dagger : MonoBehaviour
 {
-    [SerializeField] Camera camera = null;
+    [SerializeField] new Camera camera = null;
     [SerializeField] new Rigidbody rigidbody = null;
     [SerializeField] LineRenderer rope = null;
     [SerializeField] Transform attachPoint = null;
@@ -14,23 +17,27 @@ public class Dagger : MonoBehaviour
     const float TRAVEL_SPEED = 30f;
     const float RETRACT_SPEED = 10f;
     const float TRAVEL_ROTATION = 360f;
+    const float RETRACT_POP_FORCE = 0.5f;
+    const float RETRACT_PULL_FORCE = 5f;
 
     Transform originalParent;
     Quaternion originalRotation;
 
     Vector3 target;
+
+    public Rigidbody TargetRigidbody { get; private set; }
     float embedDistance = 0f;
     const float EMBED_EXTRA_SLACK_DISTANCE = 1f;
     const float PICKUP_RADIUS = 2f;
 
-    enum State
+    public enum DaggerState
     {
         Holstered,
         Firing,
         Embedded,
         Retracting,
     }
-    State state = State.Holstered;
+    public DaggerState State { get; private set; } = DaggerState.Holstered;
 
     void Start()
     {
@@ -42,12 +49,12 @@ public class Dagger : MonoBehaviour
 
     void Update()
     {
-        if (state != State.Holstered)
+        if (State != DaggerState.Holstered)
         {
             RenderRope();
         }
 
-        if (state == State.Embedded)
+        if (State == DaggerState.Embedded)
         {
             var distance = Vector3.Distance(originalParent.position, transform.position);
             if (distance >= embedDistance || distance <= PICKUP_RADIUS)
@@ -59,14 +66,25 @@ public class Dagger : MonoBehaviour
 
     public void Action()
     {
-        if (state == State.Holstered)
+        if (State == DaggerState.Holstered)
         {
             StartCoroutine(Fire());
         }
-        else if (state == State.Embedded)
+        else if (State == DaggerState.Embedded)
         {
             StartCoroutine(Retract());
         }
+    }
+
+    public void ActionBoth(Dagger other)
+    {
+        if (TargetRigidbody != null && other.TargetRigidbody == TargetRigidbody)
+        {
+            var retractionForce = (Vector3.up + transform.forward * -1f).normalized * RETRACT_PULL_FORCE;
+            TargetRigidbody.AddForce(retractionForce, ForceMode.Impulse);
+        }
+
+        Action();
     }
 
     IEnumerator Fire()
@@ -75,7 +93,7 @@ public class Dagger : MonoBehaviour
         RaycastHit hit;
         if (!Physics.Raycast(ray, out hit)) yield break;
 
-        state = State.Firing;
+        State = DaggerState.Firing;
 
         transform.parent = null;
         target = hit.point;
@@ -89,17 +107,22 @@ public class Dagger : MonoBehaviour
             yield return null;
         }
 
-        state = State.Embedded;
+        State = DaggerState.Embedded;
+
+        TargetRigidbody = hit.rigidbody;
 
         embedDistance = Vector3.Distance(originalParent.position, target) + EMBED_EXTRA_SLACK_DISTANCE;
     }
 
     IEnumerator Retract()
     {
-        state = State.Retracting;
+        State = DaggerState.Retracting;
+
+        target = Vector3.zero;
+        TargetRigidbody = null;
 
         rigidbody.isKinematic = false;
-        var retractionForce = (Vector3.up + transform.forward * -1f).normalized * 0.5f;
+        var retractionForce = (Vector3.up + transform.forward * -1f).normalized * RETRACT_POP_FORCE;
         rigidbody.AddForce(retractionForce, ForceMode.Impulse);
 
         yield return new WaitForSeconds(0.5f);
@@ -113,7 +136,7 @@ public class Dagger : MonoBehaviour
             yield return null;
         }
 
-        state = State.Holstered;
+        State = DaggerState.Holstered;
 
         transform.parent = originalParent;
         transform.localPosition = Vector3.zero;
