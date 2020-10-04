@@ -75,7 +75,6 @@ public class CharacterControl : MonoBehaviour
             var toLeft = daggerLeft.transform.position - transform.position;
             var toRight = daggerRight.transform.position - transform.position;
             popVelocity = ((toLeft + toRight).normalized + Vector3.up).normalized * POP_FORCE;
-            Debug.Log("Popping with velocity " + popVelocity);
             StartCoroutine(DragPopVelocity());
         }
 

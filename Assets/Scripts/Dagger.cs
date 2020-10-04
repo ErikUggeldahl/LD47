@@ -13,6 +13,7 @@ public class Dagger : MonoBehaviour
     [SerializeField] LineRenderer rope = null;
     [SerializeField] Transform attachPoint = null;
     [SerializeField] Transform rotationParent = null;
+    [SerializeField] Collider interceptTrigger = null;
 
     const float TRAVEL_SPEED = 30f;
     const float RETRACT_SPEED = 10f;
@@ -100,7 +101,9 @@ public class Dagger : MonoBehaviour
 
         rope.enabled = true;
 
-        while (!MoveToTarget(target, TRAVEL_SPEED))
+        interceptTrigger.enabled = true;
+
+        while (interceptTrigger.enabled && !MoveToTarget(target, TRAVEL_SPEED))
         {
             rotationParent.Rotate(Vector3.forward, TRAVEL_ROTATION * Time.deltaTime, Space.Self);
 
@@ -110,6 +113,7 @@ public class Dagger : MonoBehaviour
         State = DaggerState.Embedded;
 
         TargetRigidbody = hit.rigidbody;
+        interceptTrigger.enabled = false;
 
         embedDistance = Vector3.Distance(originalParent.position, target) + EMBED_EXTRA_SLACK_DISTANCE;
     }
@@ -172,5 +176,11 @@ public class Dagger : MonoBehaviour
 
         var slack = 1f - Vector3.Distance(transform.position, originalParent.position) / embedDistance;
         rope.startColor = Color.white * slack;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.name);
+        interceptTrigger.enabled = false;
     }
 }
