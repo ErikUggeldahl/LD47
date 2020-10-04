@@ -105,6 +105,11 @@ public class Dagger : MonoBehaviour
     {
         if (TargetRigidbody != null && other.TargetRigidbody == TargetRigidbody)
         {
+            if (TargetRigidbody.tag == "Enemy")
+            {
+                TargetRigidbody.GetComponentInParent<Guard>().Explode();
+            }
+
             var retractionForce = (Vector3.up + transform.forward * -1f).normalized * RETRACT_PULL_FORCE;
             TargetRigidbody.AddForce(retractionForce, ForceMode.Impulse);
         }
@@ -140,8 +145,17 @@ public class Dagger : MonoBehaviour
 
         State = DaggerState.Embedded;
 
-        TargetRigidbody = hit.rigidbody;
         interceptTrigger.enabled = false;
+
+        if (TargetRigidbody == null)
+        {
+            TargetRigidbody = hit.rigidbody;
+        }
+
+        if (TargetRigidbody && TargetRigidbody.tag == "Enemy")
+        {
+            TargetRigidbody.GetComponentInParent<Guard>().Die();
+        }
 
         embedDistance = Vector3.Distance(originalParent.position, target) + EMBED_EXTRA_SLACK_DISTANCE;
     }
@@ -209,5 +223,7 @@ public class Dagger : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         interceptTrigger.enabled = false;
+
+        TargetRigidbody = other.attachedRigidbody;
     }
 }
